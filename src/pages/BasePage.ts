@@ -20,4 +20,6 @@ export class BasePage {
     const toastMessage = await this.toastNotification.innerText();
     return toastMessage;
   }
+
+
 }
