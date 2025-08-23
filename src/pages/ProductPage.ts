@@ -57,4 +57,29 @@ export class ProductPage extends BasePage {
     `);
     await removeButton.click();
   }
+  async selectSortOption(optionLabel: string): Promise<void> {
+    const sortDropdown = this.page.locator('select[data-test="sort"]');
+    await sortDropdown.selectOption({ label: optionLabel });
+  }
+
+  async getProductNames(): Promise<string[]> {
+    const productTitles = this.page.locator(
+      '[data-test="sorting_completed"] [data-test="product-name"]',
+    );
+    await productTitles.first().waitFor({ state: 'visible' });
+    const names = await productTitles.allTextContents();
+    return names;
+  }
+
+  async getProductPrices(): Promise<number[]> {
+    const priceLocators = this.page.locator(
+      '[data-test="sorting_completed"] [data-test="product-price"]',
+    );
+
+    await priceLocators.first().waitFor({ state: 'visible' });
+    const priceStrings = await priceLocators.allTextContents();
+    const prices = priceStrings.map((price) => Number(price.replace('$', '')));
+
+    return prices;
+  }
 }

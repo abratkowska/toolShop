@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { BasePage } from '../pages/BasePage';
 import { ProductPage } from '../pages/ProductPage';
 
-test.describe('Add Product to Shopping Cart', () => {
+test.describe('Add Products to Shopping Cart', () => {
   let basePage: BasePage;
   let productPage: ProductPage;
   test.beforeEach(async ({ page }) => {
