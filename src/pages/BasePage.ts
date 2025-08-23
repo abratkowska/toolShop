@@ -21,5 +21,8 @@ export class BasePage {
     return toastMessage;
   }
 
-
+  async getBasketItemsCount(): Promise<number> {
+    const basketItems = this.page.locator('table.table-hover tbody tr');
+    return await basketItems.count();
+  }
 }
