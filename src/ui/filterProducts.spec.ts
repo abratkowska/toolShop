@@ -25,17 +25,27 @@ test.describe('Sort Products', () => {
     expect(actualProductNames).toEqual(sortedProductNames);
   });
 
-  test('Filter products by price Price (High - Low) verify if they are sorted', async ({}) => {
+  test('Sort products by price Price (High - Low) verify if they are sorted', async ({}) => {
     await productPage.selectSortOption('Price (High - Low)');
     const actualPrices = await productPage.getProductPrices();
     const expectedPrices = [...actualPrices].sort((a, b) => b - a);
     expect(actualPrices).toEqual(expectedPrices);
   });
 
-  test('Filter products by price Price (Low - High) verify if they are sorted', async ({}) => {
+  test('Sort products by price Price (Low - High) verify if they are sorted', async ({}) => {
     await productPage.selectSortOption('Price (Low - High)');
     const actualPrices = await productPage.getProductPrices();
     const expectedPrices = [...actualPrices].sort((a, b) => a - b);
     expect(actualPrices).toEqual(expectedPrices);
   });
+// To jeszcze nie działa 
+//   test('should show only Hammer products when sorted by category Hammer', async ({}) => {
+//     await productPage.checkCategory('01K3E9G4DQ7XYEGVN993SNVZ1C');
+//     const hasHammer = await productPage.hasProductWithName('Hammer');
+//     expect(hasHammer).toBeTruthy();
+//     const names = await productPage.getProductNames();
+//     for (const name of names) {
+//       expect(name).toContain('Hammer');
+//     }
+//   });
 });

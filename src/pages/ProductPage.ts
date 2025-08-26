@@ -82,4 +82,16 @@ export class ProductPage extends BasePage {
 
     return prices;
   }
+
+  async checkCategory(categoryProductNumber:string): Promise<void> {
+    const click = this.page.locator(
+      `[data-test="category-${categoryProductNumber}"]`,
+    );
+    await click.click();
+  }
+
+  async hasProductWithName(expectedName: string): Promise<boolean> {
+    const names = await this.getProductNames();
+    return names.some(name => name.includes(expectedName));
+  }
 }
