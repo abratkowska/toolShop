@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 import 'dotenv/config';
 
 const baseConfig = defineConfig({
-  testDir: './src/ui',
+  testDir: './src/tests/ui',
   timeout: 60_000,
   expect: { timeout: 15_000 },
   reporter: 'html',

@@ -23,6 +23,8 @@ export class ProductPage extends BasePage {
     }
   }
 
+  
+
   async verifyProductInShoppingCart(
     productNames: string[],
     isVisible: boolean,
@@ -83,7 +85,7 @@ export class ProductPage extends BasePage {
     return prices;
   }
 
-  async checkCategory(categoryProductNumber:string): Promise<void> {
+  async checkCategory(categoryProductNumber: string): Promise<void> {
     const click = this.page.locator(
       `[data-test="category-${categoryProductNumber}"]`,
     );
@@ -92,6 +94,11 @@ export class ProductPage extends BasePage {
 
   async hasProductWithName(expectedName: string): Promise<boolean> {
     const names = await this.getProductNames();
-    return names.some(name => name.includes(expectedName));
+    return names.some((name) => name.includes(expectedName));
+  }
+
+  async isProductCardVisible(productName: string): Promise<boolean> {
+    const locator = this.page.locator(`text="${productName}"`);
+    return await locator.isVisible().catch(() => false);
   }
 }

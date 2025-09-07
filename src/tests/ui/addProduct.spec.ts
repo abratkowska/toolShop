@@ -1,6 +1,8 @@
 import { test, expect } from '@playwright/test';
-import { BasePage } from '../pages/BasePage';
-import { ProductPage } from '../pages/ProductPage';
+import { BasePage } from '../../pages/BasePage';
+import { ProductPage } from '../../pages/ProductPage';
+
+const productsToCheck = ['Slip Joint Pliers'];
 
 test.describe('Add Products to Shopping Cart', () => {
   let basePage: BasePage;
@@ -11,14 +13,16 @@ test.describe('Add Products to Shopping Cart', () => {
     await basePage.goto(basePage.baseUrl);
   });
 
-  test('Add Combination Pliers to shopping cart and verify if is added', async ({}) => {
-    await productPage.clickOnProductCard('Combination Pliers');
+  test('Add Combination Pliers to shopping cart and verify if is added', async () => {
+    const productName = 'Combination Pliers';
+    await productPage.clickOnProductCard(productName);
     await productPage.addProductToCart();
     await basePage.verifyToastNotification();
     await expect(basePage.toastNotification).toHaveText(
       ' Product added to shopping cart.',
     );
     await expect(basePage.toastNotification).not.toBeVisible();
+
     await productPage.navigateToShoppingCart();
     const productsToCheck = ['Combination Pliers'];
     await productPage.verifyProductInShoppingCart(productsToCheck, true);
@@ -28,14 +32,16 @@ test.describe('Add Products to Shopping Cart', () => {
   });
 
   test('Add 2 different products', async ({ page }) => {
-    await productPage.clickOnProductCard('Pliers');
+    const productName = 'Bolt Cutter';
+
+    await productPage.clickOnProductCard('Combination Pliers');
     await productPage.addProductToCart();
     await basePage.verifyToastNotification();
     await expect(basePage.toastNotification).toHaveText(
       ' Product added to shopping cart.',
     );
     await page.goBack();
-    await productPage.clickOnProductCard('Bolt Cutter');
+    await productPage.clickOnProductCard(productName);
     await productPage.addProductToCart();
     await expect(basePage.toastNotification).not.toBeVisible();
     await productPage.navigateToShoppingCart();
@@ -47,7 +53,8 @@ test.describe('Add Products to Shopping Cart', () => {
   });
 
   test('Add same product multiple times', async ({}) => {
-    await productPage.clickOnProductCard('Combination Pliers');
+    const productName = 'Combination Pliers';
+    await productPage.clickOnProductCard(productName);
     await productPage.addProductToCartMultipleTimes(2);
     await productPage.addProductToCart();
     await basePage.verifyToastNotification();
@@ -61,14 +68,15 @@ test.describe('Add Products to Shopping Cart', () => {
   });
 
   test('Remove product from cart', async ({}) => {
-    await productPage.clickOnProductCard('Slip Joint Pliers');
+    const productName = 'Slip Joint Pliers';
+
+    await productPage.clickOnProductCard(productName);
     await productPage.addProductToCart();
     await basePage.verifyToastNotification();
     await expect(basePage.toastNotification).toHaveText(
       ' Product added to shopping cart.',
     );
     await productPage.navigateToShoppingCart();
-    const productsToCheck = ['Slip Joint Pliers'];
     await productPage.verifyProductInShoppingCart(productsToCheck, true);
 
     const countProduct = await basePage.getBasketItemsCount();
