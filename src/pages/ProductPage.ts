@@ -23,8 +23,6 @@ export class ProductPage extends BasePage {
     }
   }
 
-  
-
   async verifyProductInShoppingCart(
     productNames: string[],
     isVisible: boolean,
@@ -100,5 +98,16 @@ export class ProductPage extends BasePage {
   async isProductCardVisible(productName: string): Promise<boolean> {
     const locator = this.page.locator(`text="${productName}"`);
     return await locator.isVisible().catch(() => false);
+  }
+
+  async tryAddNonExistentProduct(productName: string): Promise<boolean> {
+    const isVisible = await this.isProductCardVisible(productName);
+    if (isVisible) {
+      await this.clickOnProductCard(productName);
+      await this.addProductToCart();
+      // Optionally: check for toast notification or error message
+      return true;
+    }
+    return false;
   }
 }
