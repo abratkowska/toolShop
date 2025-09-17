@@ -15,14 +15,14 @@ export class BasePage {
     await this.page.goto(url ? url : this.baseUrl);
   }
 
-  async verifyToastNotification(): Promise<string> {
-    await this.toastNotification.waitFor({ state: 'visible' });
-    const toastMessage = await this.toastNotification.innerText();
-    return toastMessage;
-  }
+  // async verifyToastNotification(): Promise<string> {
+  //   await this.toastNotification.waitFor({ state: 'visible' });
+  //   const toastMessage = await this.toastNotification.innerText();
+  //   return toastMessage;
+  // }
 
-  async getBasketItemsCount(): Promise<number> {
-    const basketItems = this.page.locator('table.table-hover tbody tr');
-    return await basketItems.count();
-  }
+  // async getBasketItemsCount(): Promise<number> {
+  //   const basketItems = this.page.locator('table.table-hover tbody tr');
+  //   return await basketItems.count();
+  // }
 }
