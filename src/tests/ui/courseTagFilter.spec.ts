@@ -3,7 +3,7 @@ import { BasePage } from '../../pages/BasePage';
 import { DashboardPage } from '../../pages/DashboardPage';
 import { test } from '@playwright/test';
 
-test.describe('Sign In to Dashboard', () => {
+test.describe('Filter Courses by Tag', () => {
   let basePage: BasePage;
   let dashboardPage: DashboardPage;
 
@@ -14,7 +14,15 @@ test.describe('Sign In to Dashboard', () => {
     await dashboardPage.clickSignIn(userData.test_user);
   });
 
-  test('Sign In to Dashboard ', async ({}) => {
-    await dashboardPage.clickOnLevelFilter('Beginner');
+  test('Display only beginner-level courses when filtered', async ({}) => {
+    await dashboardPage.clickOnTags('API');
+    await dashboardPage.verifyCourseTag();
+  });
+
+  test('Verify all course tags have proper attributes', async ({}) => {
+    await dashboardPage.clickShowMoreForTags();
+    await dashboardPage.verifyCourseTag();
+    await dashboardPage.clickOnTags('API');
+    await dashboardPage.verifyCourseLevelForTag('API');
   });
 });

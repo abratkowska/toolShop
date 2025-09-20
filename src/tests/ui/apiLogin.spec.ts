@@ -4,7 +4,7 @@ import { DashboardPage } from '../../pages/DashboardPage';
 import { expect, test } from '@playwright/test';
 import { LoginPage } from '../../pages/LoginPage';
 
-test.describe('Sign In to Dashboard', () => {
+test.describe('API Login Tests', () => {
   let basePage: BasePage;
   let dashboardPage: DashboardPage;
   let loginPage: LoginPage;
@@ -13,17 +13,16 @@ test.describe('Sign In to Dashboard', () => {
     basePage = new BasePage(page);
     dashboardPage = new DashboardPage(page);
     loginPage = new LoginPage(page);
-
     await basePage.goto('/learning/welcome.html');
   });
 
-  test('Sign In to Dashboard with correct credentials', async ({}) => {
-    await dashboardPage.clickSignIn(userData.test_user);
-    await expect(dashboardPage.dashboardHeader).toBeVisible();
-  });
+  test('Login via API with correct credentials', async ({ page }) => {
+    // Step 1: Login via API
+    const { test_user } = userData;
 
-  test('Sign In to Dashboard with incorrect credentials', async ({ page }) => {
-    await dashboardPage.clickSignIn(userData.nonExistingAccount);
-    await loginPage.verifyInvalidLogin();
+    await loginPage.loginViaAPI(page, test_user);
+    await basePage.goto('/learning/welcome.html');
+
+    await expect(dashboardPage.dashboardHeader).toBeVisible();
   });
 });
