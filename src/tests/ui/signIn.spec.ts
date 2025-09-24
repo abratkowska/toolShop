@@ -18,12 +18,12 @@ test.describe('Sign In to Dashboard', () => {
   });
 
   test('Sign In to Dashboard with correct credentials', async ({}) => {
-    await dashboardPage.clickSignIn(userData.test_user);
+    await dashboardPage.logIn(userData.test_user);
     await expect(dashboardPage.dashboardHeader).toBeVisible();
   });
 
   test('Sign In to Dashboard with incorrect credentials', async ({ page }) => {
-    await dashboardPage.clickSignIn(userData.nonExistingAccount);
+    await dashboardPage.logIn(userData.nonExistingAccount);
     await loginPage.verifyInvalidLogin();
   });
 });

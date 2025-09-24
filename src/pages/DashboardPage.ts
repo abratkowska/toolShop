@@ -9,11 +9,15 @@ export class DashboardPage extends BasePage {
   readonly submitButton = this.page.locator('[type="submit"]');
   readonly dashboardHeader = this.page.locator('[class="dashboard-header"]');
 
-  async clickSignIn(loginUser: IUserCredentials): Promise<void> {
-    await this.signInButton.click();
+  async logIn(loginUser: IUserCredentials): Promise<void> {
+    // await this.clickSignIn();
     await this.userNameInput.fill(loginUser.email);
     await this.passwordInput.fill(loginUser.password);
     await this.submitButton.click();
+  }
+
+  async clickSignIn() {
+    await this.signInButton.click();
   }
 
   async clickOnTags(tag: string): Promise<void> {

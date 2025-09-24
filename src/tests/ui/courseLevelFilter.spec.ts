@@ -12,7 +12,7 @@ test.describe('Course Level Filtering', () => {
     basePage = new BasePage(page);
     dashboardPage = new DashboardPage(page);
     await basePage.goto('/learning/welcome.html');
-    await dashboardPage.clickSignIn(userData.test_user);
+    await dashboardPage.logIn(userData.test_user);
   });
 
   test('Filter courses by beginner level', async () => {

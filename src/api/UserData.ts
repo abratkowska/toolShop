@@ -1,4 +1,4 @@
-import { expect, Page, request } from '@playwright/test';
+import { expect, request } from '@playwright/test';
 import { ILoginData, IUserCredentials } from '../interfaces/UserModel';
 
 export async function getToken(
@@ -27,4 +27,14 @@ export async function getToken(
     avatar: response.avatar,
     firstName: response.firstName,
   };
+}
+
+export async function restoreDB(): Promise<void> {
+  const requestContext = await request.newContext();
+  const res = await requestContext.get(
+    `${process.env.API_BASE_URL}/learning/system/restore`,
+  );
+
+  expect(res.status()).toBe(200);
+  await requestContext.dispose();
 }

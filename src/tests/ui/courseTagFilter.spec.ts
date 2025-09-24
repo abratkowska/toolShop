@@ -11,7 +11,7 @@ test.describe('Filter Courses by Tag', () => {
     basePage = new BasePage(page);
     dashboardPage = new DashboardPage(page);
     await basePage.goto('/learning/welcome.html');
-    await dashboardPage.clickSignIn(userData.test_user);
+    await dashboardPage.logIn(userData.test_user);
   });
 
   test('Verify all course with tag API', async ({}) => {

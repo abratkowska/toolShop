@@ -7,6 +7,11 @@ export class LoginPage extends BasePage {
   readonly notificationError = this.page.locator(
     '[class="notification error"]',
   );
+  readonly loginLink = this.page.getByRole('link', { name: /sign in|login/i });
+  readonly usernameField = this.page.getByLabel(/email|username/i);
+  readonly passwordField = this.page.getByLabel(/password/i);
+  readonly submitButton = this.page.getByRole('button', { name: /sign in|login/i });
+  readonly dashboardHeading = this.page.getByRole('heading', { name: /dashboard|courses|welcome/i });
 
   async loginViaAPI(page: Page, loginUser: IUserCredentials): Promise<void> {
     const { token, id, username, avatar, firstName } =
@@ -38,4 +43,6 @@ export class LoginPage extends BasePage {
   async verifyInvalidLogin(): Promise<void> {
     await expect(this.notificationError).toBeVisible();
   }
+
+
 }
