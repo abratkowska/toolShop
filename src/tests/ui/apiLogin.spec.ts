@@ -17,12 +17,8 @@ test.describe('API Login Tests', () => {
   });
 
   test('Login via API with correct credentials', async ({ page }) => {
-    // Step 1: Login via API
     const { test_user } = userData;
-
     await loginPage.loginViaAPI(page, test_user);
-    await basePage.goto('/learning/welcome.html');
-
     await expect(dashboardPage.dashboardHeader).toBeVisible();
   });
 });

@@ -18,27 +18,28 @@ export class DashboardPage extends BasePage {
 
   async clickOnTags(tag: string): Promise<void> {
     await this.clickShowMoreForTags();
-    const tagElement = this.page.locator(`[data-tag="${tag}"]`).first();
+    const tagElement = this.page.locator(`[data-tag="${tag}"]`);
     await tagElement.click();
     await expect(tagElement).toBeVisible();
   }
 
   async verifyCourseTag(): Promise<void> {
     const courseTags = this.page.locator('div.course-tags span');
-    const tagCount = await courseTags.count();
-    expect(tagCount).toBeGreaterThan(0);
-    for (let i = 0; i < tagCount; i++) {
-      const tag = courseTags.nth(i);
-      const tagText = await tag.textContent();
-      if (tagText) {
-        await expect(tag).toHaveAttribute('title', tagText.trim());
-      }
-    }
+    expect(await courseTags.count()).toBeGreaterThan(0);
+    const count = await courseTags.count();
+    await Promise.all(
+      Array.from({ length: count }).map(async (_, i) => {
+        const tag = courseTags.nth(i);
+        const text = (await tag.textContent())?.trim() || '';
+        await expect(tag).toHaveAttribute('title', text);
+      }),
+    );
   }
 
   async clickShowMoreForTags(): Promise<void> {
-    await this.page.locator('button').filter({ hasText: /show more/i });
+    await this.page.locator('.show-more-tags').click();
   }
+
   async verifyCourseLevelForTag(tagName: string): Promise<void> {
     const tagElements = this.page
       .locator('div.course-tags span')
@@ -51,138 +52,40 @@ export class DashboardPage extends BasePage {
   }
 
   async filterCoursesByLevel(level: string): Promise<void> {
-    const levelFilter = this.page
+    await this.page
       .locator(
-        `[data-level="${level}"], [data-filter="${level}"], .level-filter`,
+        `[data-level="${level}"]
+      `,
       )
-      .filter({ hasText: new RegExp(level, 'i') });
-    const levelFilterCount = await levelFilter.count();
-
-    if (levelFilterCount > 0) {
-      await levelFilter.first().click();
-    } else {
-      const alternativeSelectors = [
-        this.page.locator(`button`).filter({ hasText: new RegExp(level, 'i') }),
-        this.page
-          .locator(`[class*="level"]`)
-          .filter({ hasText: new RegExp(level, 'i') }),
-        this.page
-          .locator(`[class*="filter"]`)
-          .filter({ hasText: new RegExp(level, 'i') }),
-      ];
-
-      for (const selector of alternativeSelectors) {
-        const count = await selector.count();
-        if (count > 0) {
-          await selector.first().click();
-          break;
-        }
-      }
-    }
-
+      .click();
     await this.page.waitForTimeout(500);
   }
+
   async verifyCourseLevelFilter(level: string): Promise<void> {
-    const activeLevelFilter = this.page
-      .locator(
-        `[data-level="${level}"].active, [data-filter="${level}"].active, .level-filter.active`,
-      )
-      .filter({ hasText: new RegExp(level, 'i') });
-    const activeCount = await activeLevelFilter.count();
+    await expect(
+      this.page
+        .locator(
+          `[data-level="${level}"].active, [data-filter="${level}"].active, .level-filter.active`,
+        )
+        .first(),
+    ).toBeVisible();
+    const matchingCourses = this.page
+      .locator(`.course-card, .course-item, [class*="course"]`)
+      .filter({ hasText: level });
 
-    if (activeCount > 0) {
-      await expect(activeLevelFilter.first()).toBeVisible();
-    }
-    const courseCards = this.page.locator(
-      '.course-card, .course-item, [class*="course"]',
-    );
-    const courseCount = await courseCards.count();
-
-    if (courseCount > 0) {
-      const levelCourses = courseCards.filter({
-        hasText: new RegExp(level, 'i'),
-      });
-      const levelCourseCount = await levelCourses.count();
-      expect(levelCourseCount).toBeGreaterThan(0);
-    }
+    expect(await matchingCourses.count()).toBeGreaterThan(0);
   }
 
   async getCourseCountByLevel(level: string): Promise<number> {
-    const courseCards = this.page.locator(
-      '.course-card, .course-item, [class*="course"]',
-    );
-    const allCourses = await courseCards.count();
-
-    if (allCourses === 0) {
-      return 0;
-    }
-
-    const levelCourses = courseCards.filter({
-      hasText: new RegExp(level, 'i'),
-    });
-    return await levelCourses.count();
+    return this.page
+      .locator('.course-card, .course-item, [class*="course"]')
+      .filter({ hasText: level })
+      .count();
   }
 
   async getTotalCourseCount(): Promise<number> {
-    const courseCards = this.page.locator(
-      '.course-card, .course-item, [class*="course"]',
-    );
-    return await courseCards.count();
-  }
-
-  async clearLevelFilter(): Promise<void> {
-    const clearButton = this.page
-      .locator('button')
-      .filter({ hasText: /clear|reset|all/i });
-    const clearCount = await clearButton.count();
-
-    if (clearCount > 0) {
-      await clearButton.first().click();
-    } else {
-      const allButton = this.page
-        .locator('button, a')
-        .filter({ hasText: /all|show all/i });
-      const allCount = await allButton.count();
-      if (allCount > 0) {
-        await allButton.first().click();
-      }
-    }
-
-    await this.page.waitForTimeout(500);
-  }
-
-  async verifyNoLevelFilterActive(): Promise<void> {
-    const activeFilters = this.page.locator(
-      '.level-filter.active, [data-level].active, [data-filter].active',
-    );
-    const activeCount = await activeFilters.count();
-    expect(activeCount).toBe(0);
-  }
-
-  async verifyCourseLevelAndTagFilter(
-    level: string,
-    tag: string,
-  ): Promise<void> {
-    await this.verifyCourseLevelFilter(level);
-
-    await this.verifyCourseLevelForTag(tag);
-
-    const courseCards = this.page.locator(
-      '.course-card, .course-item, [class*="course"]',
-    );
-    const courseCount = await courseCards.count();
-
-    if (courseCount > 0) {
-      const filteredCourses = courseCards
-        .filter({
-          hasText: new RegExp(level, 'i'),
-        })
-        .filter({
-          hasText: new RegExp(tag, 'i'),
-        });
-
-      const filteredCount = await filteredCourses.count();
-      expect(filteredCount).toBeGreaterThan(0);
-    }
+    return this.page
+      .locator('.course-card, .course-item, [class*="course"]')
+      .count();
   }
 }

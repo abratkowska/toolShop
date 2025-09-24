@@ -3,6 +3,10 @@ export interface IUserCredentials {
   password: string;
 }
 
-export interface ILoginData extends IUserCredentials {
-  token: string
+export interface ILoginData {
+  token: string;
+  id: number;
+  username: string;
+  avatar: string;
+  firstName: string;
 }

@@ -1,25 +1,41 @@
-import { expect, Page } from "@playwright/test";
-import { getToken } from "../api/UserData";
-import { ILoginData, IUserCredentials } from "../interfaces/UserModel";
- import { BasePage } from './BasePage';
-
+import { expect, Page } from '@playwright/test';
+import { getToken } from '../api/UserData';
+import { ILoginData, IUserCredentials } from '../interfaces/UserModel';
+import { BasePage } from './BasePage';
 
 export class LoginPage extends BasePage {
- readonly notificationError = this.page.locator('[class="notification error"]')
- async  loginViaAPI(
-  page: Page,
-  loginUser: IUserCredentials
-): Promise<void> {
-  const { token } = await getToken(loginUser);
+  readonly notificationError = this.page.locator(
+    '[class="notification error"]',
+  );
 
-  await page.addInitScript((t: string) => {
-    window.localStorage.setItem("token", t);
-  }, token);
+  async loginViaAPI(page: Page, loginUser: IUserCredentials): Promise<void> {
+    const { token, id, username, avatar, firstName } =
+      await getToken(loginUser);
 
-  await page.goto("/learning/welcome.html");
-}
+    await page.addInitScript((t: string) => {
+      document.cookie = `learning_access_token=${t}; path=/;`;
+    }, token);
 
-async verifyInvalidLogin(): Promise<void> {
+    await page.addInitScript((userId: string) => {
+      document.cookie = `learning_user_id=${userId}; path=/;`;
+    }, String(id));
+
+    await page.addInitScript((u: string) => {
+      document.cookie = `learning_username=${u}; path=/;`;
+    }, username);
+
+    await page.addInitScript((a: string) => {
+      document.cookie = `learning_avatar=${a}; path=/;`;
+    }, avatar);
+
+    await page.addInitScript((fn: string) => {
+      document.cookie = `learning_first_name=${fn}; path=/;`;
+    }, firstName);
+
+    await page.goto('/learning/dashboard.html');
+  }
+
+  async verifyInvalidLogin(): Promise<void> {
     await expect(this.notificationError).toBeVisible();
-}
+  }
 }
