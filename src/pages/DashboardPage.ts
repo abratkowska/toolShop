@@ -10,7 +10,7 @@ export class DashboardPage extends BasePage {
   readonly dashboardHeader = this.page.locator('[class="dashboard-header"]');
 
   async logIn(loginUser: IUserCredentials): Promise<void> {
-    // await this.clickSignIn();
+    await this.clickSignIn();
     await this.userNameInput.fill(loginUser.email);
     await this.passwordInput.fill(loginUser.password);
     await this.submitButton.click();

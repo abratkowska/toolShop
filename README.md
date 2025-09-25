@@ -1,5 +1,5 @@
 # Tests for Tool Shop
-https://practicesoftwaretesting.com/
+
 
 ### Local recommended tools:
 
